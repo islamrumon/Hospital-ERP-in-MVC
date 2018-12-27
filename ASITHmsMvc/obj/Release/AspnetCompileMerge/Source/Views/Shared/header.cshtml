@@ -1,0 +1,43 @@
+﻿@model ASITHmsMvc.Models.header
+<!--This is Profile Section -->
+@if (Model != null) {
+
+<div class="logo-img">
+    <div class="d-none d-md-block">
+        <a href="/">
+            <img src="@Model.imgTitle1" class="wide-logo" style="width:300px"/>
+        </a>
+
+   
+    </div>
+    <div class="d-md-none d-md-none">
+        <img src="@Model.imgLogo1" width="70" />
+    </div>
+
+
+</div>
+<ul class="nav navbar-nav navbar-right ">
+    <li class="profile-dropdown dropdown">
+
+        <a href="javascript:void(0)" class="user-profile dropdown-toggle ripple" data-toggle="dropdown" aria-expanded="false" onclick="myFunction()" id="SigninName" runat="server" title="Manage your account">
+            <img src="@Model.imgAdmin" class="img-admin"/>
+            <span class="d-none d-sm-block">
+                @Html.DisplayFor(model => model.signname)
+
+            </span>
+            <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu float-right text-center" id="myDIV">
+            <ul class="list-group">
+                <li><a runat="server" href="/User/About">About</a></li>
+                <li><a runat="server" href="/User/Contact">Contact</a></li>
+                <li>
+                    @Html.ActionLink("Logout", "logout", "login");
+                </li>
+            </ul>
+
+        </ul>
+    </li>
+</ul>
+
+}

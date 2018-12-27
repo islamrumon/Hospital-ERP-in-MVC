@@ -1,0 +1,162 @@
+﻿@model ASITHmsMvc.Models.EmployeSingle
+
+@{
+    ViewBag.Title = "AttnRptSingle";
+  
+}
+
+
+<div class="main-content small-gutter">
+
+    <div class="row justify-content-md-center" id="loading">
+        <div class="col-md-12 bot-mar">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"> <p style="font-size:17px; color: #000; padding-top: 10px;">Loading...</p></div> <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-bdr">
+                <div class="panel panel-success">
+                    <div class="card-header">
+                        <button class="btn btn-circle btn-custom pdf"><i class='fa fa fa-print'></i></button>
+                        <a class="btn btn-circle btn-custom pdf" target="_blank" href="@Url.Action("AttnRptSingle","report", new RouteValueDictionary ( new {monthid1 = ViewBag.mount,hccode1a= ViewBag.id, reportType="pdf" }))"><i class='fa fa-file-pdf-o'></i></a>
+                        <a class="btn btn-circle btn-custom pdf" target="_blank" href="@Url.Action("AttnRptSingle","report", new RouteValueDictionary ( new { monthid1 = ViewBag.mount,hccode1a= ViewBag.id, reportType="docx"}))"><i class="fa fa-file-word-o"></i></a>
+                        <a class="btn btn-circle btn-custom pdf" target="_blank" href="@Url.Action("AttnRptSingle","report", new RouteValueDictionary ( new { monthid1 = ViewBag.mount,hccode1a= ViewBag.id, reportType="xlsx"}))"><i class="fa fa-file-excel-o"></i></a>
+                        
+                    </div>
+                    <div class="card-header panel-heading">
+                        <button type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2" class="btn btn-custom btn-block text-center">INDIVIDUAL STAFF ATTENDANCE REPORT</button>
+
+                    </div>
+                    <div class="collapse multi-collapse" id="multiCollapseExample2">
+                        <div class="card-body panel-body">
+                            @using (Html.BeginForm("AttnRptSingle", "General", FormMethod.Get))
+                            {
+
+                                <div class="row justify-content-md-center">
+                                    <div class="col-sm-6 col-md-4 ">
+                                        <div class="form-group grpType">
+                                            <label>Employee ID :</label>
+                                            <input class="form-control epad form-group txtgrpMonth" name="EmpId" placeholder="Employee ID" required autocomplete="on" />
+                                            @Html.ValidationMessageFor(model => model.EmpId, "", new { @class = "text-danger" })
+
+                                        </div>
+                                        <div class="form-group grpType">
+                                            <label> Type :</label>
+                                            <!--dropdown form-group ddlType-->
+                                            <select class="form-control" id="dropdownlist">
+                                                <option value="1">SHARE HOLDERS</option>
+                                                <option value="1">HIGH OFFICIALS AND CONSULTANTS</option>
+                                                <option value="1">PARMANENT EMPLOYEES</option>
+                                                <option value="1">MUSTER ROLL EMPLOYEES</option>
+                                                <option value="1">FULL TIME /PART CONSULTANTS DOCTORS </option>
+                                                <option value="1">FULL TIME /PART OTHER CONSULTANTS</option>
+                                            </select>
+                                            @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group grpType">
+                                            <label class="labels">Brance Name :</label>
+                                            @Html.DropDownList("monthId", (IEnumerable<SelectListItem>)ViewBag.ddlType, htmlAttributes: new { @id = "dropdownlist1", @class = "form-control active form-group ddlType", @reuired = "required" })
+                                            @Html.ValidationMessageFor(model => model.monthId, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8 form-group">
+                                        <button type="submit" class="btn btn-custom btn-block bntGroupShow  btn btn-margin" onclick="hiden()">Show</button>
+
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <hr />
+    @*@Html.ActionLink("success","",)*@
+    @*<a class="btn btn-success" target="_blank" href="@Url.Action("attenReport","report",new RouteValueDictionary( new { monthid1 = ViewBag.mount,hccode1a= ViewBag.id }))"></a>*@
+    <input type="hidden" value="@ViewBag.lblName" id="cols"/>
+    <!--show output data-->
+    @if (ViewBag.lblName != null)
+    {
+      
+    <div class="container">
+        <div class="row" id="DivReport" runat="server">
+            <div class=" col-md-8 dgLab-text ">
+
+                <div style="margin-left: 15px;">
+                    <h1>
+                        <b>
+                            @Html.Raw(ViewBag.lblAtten)
+
+                        </b>
+                    </h1>
+                    <h5>
+                        <b>
+                            @Html.Raw(ViewBag.lblName)
+
+                        </b>
+                    </h5>
+                    <h6 class="hidden-sm hidden-xs">
+                        @Html.Raw(ViewBag.lblDpName)
+
+                    </h6>
+                </div>
+
+            </div>
+            <div class=" col-md-4 profile d-none d-md-block ">
+                <div class="pull-right mr-5">
+                    <img style="width:130px" class="img-fluid" src="@ViewBag.img1" />
+
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="col-xl-12 col-md-12 col-sm-12 col-xs-12 table-responsive  table-striped">
+                @Html.Raw(ViewBag.lbltbl1)
+
+            </div>
+        </div>
+    </div>
+
+        
+
+    }
+</div>
+
+@section scripts{
+<script>
+    $(document).ready(function () {
+       
+        var s = $("#cols").val();
+        
+        if ( s != "") {
+            $("#multiCollapseExample2").collapse('hide');
+           
+        } else {
+            $('.collapse').collapse();
+            $(".table").DataTable();
+        }
+    });
+
+
+ 
+</script>
+    
+    }

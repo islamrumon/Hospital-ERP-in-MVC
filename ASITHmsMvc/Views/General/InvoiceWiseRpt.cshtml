@@ -1,0 +1,109 @@
+﻿@model ASITHmsMvc.Models.DtoModels.invoiceDTO
+@{
+    ViewBag.Title = "InvoiceWiseRpt";
+}
+
+
+
+<div class="container">
+    <div class="row justify-content-md-center">
+
+        <div class="search col-md-8 " id="DivSearch">
+            <div class="card card-bdr panel-group">
+                <div class="panel panel-success">
+                    <div class="card-header panel-heading">
+                        <button type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="btn btn-custom btn-block text-center">INVOICE DETAILS</button>
+
+                    </div>
+                    
+                    <div class="collapse multi-collapse" id="collapseExample">
+                        <div class="card-body panel-body">
+                            @using (Html.BeginForm("InvoiceWiseRpt", "General", FormMethod.Get))
+                            {
+                            <div class="row">
+                                @Html.ValidationSummary(true)
+
+                                <div class="col-md-3">
+
+                                </div>
+                                <div class="justify-content-md-center col-md-6">
+                                    <div class="form-group block">
+                                        <lable class="">Invoice ID :</lable>
+                                        <input class="form-control epad form-group txtgrpMonth" type="text" name="memoNum" placeholder="Invoice ID" />
+
+                                    </div>
+                                    <div class="form-group block">
+                                        <button class="btn btn-custom btn-block " type="submit">Show</button>
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                </div>
+                            </div>
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input name="sr" value="@ViewBag.lblGenerelInfo" type="hidden" />
+        @if (ViewBag.error == null)
+        {
+            <div class="col-md-8" runat="server">
+                <div class="row">
+                    <div class="col-md-8">
+                        @Html.Raw(ViewBag.lblGenerelInfo)
+
+                    </div>
+                    <div class="col-md-4">
+                        @Html.Raw(ViewBag.lblGenerelInfoRight)
+
+                    </div>
+                </div>
+                <div>
+                    @Html.Raw(ViewBag.lbltbl)
+
+                </div>
+                <div class="row">
+                    <div class="col-md-4 order-md-2 extra-padding">
+                        @Html.Raw(ViewBag.lblTblsum)
+
+                    </div>
+                    <div class="col-md-8 order-md-1">
+                        @Html.Raw(ViewBag.lblPaymentDetails)
+
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <p class="alert-danger"><strong>@ViewBag.error</strong></p>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            
+            var sr = $("[name='sr']").val();
+            if (sr != '') {
+                $("#collapseExample").collapse('hide');
+            } else {
+                $("#collapseExample").collapse();
+            }
+            
+        });
+
+
+    </script>
+}

@@ -1,0 +1,659 @@
+﻿@model ASITHmsMvc.Models.fdeskRpt
+@{
+    ViewBag.Title = "FdeskRpt";
+
+    var FromDate = "";
+    var ToDate = "";
+    var Branch = "";
+    var Report = "";
+
+}
+
+<div class="main-content small-gutter">
+
+    <div class="row justify-content-md-center" id="loading">
+        <div class="col-md-12 bot-mar">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"> <p style="font-size:17px; color: #000; padding-top: 10px;">Loading...</p></div> <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-bdr">
+                <div class="panel panel-success">
+             
+                    <div class="card-header">
+                        
+                        <button class="btn btn-circle btn-custom pdf"><i class='fa fa fa-print'></i></button>
+                        <a class="btn btn-circle btn-custom pdf" target="_blank" href="@Url.Action("reports","general", new RouteValueDictionary ( new {toDate=ToDate,branch=Branch ,report=Report,fromDate= FromDate, reportType="pdf" }))"><i class='fa fa-file-pdf-o'></i></a>
+                        <a class="btn btn-circle btn-custom pdf" target="_blank" href="@Url.Action("AttnRptSingle","report", new RouteValueDictionary ( new { monthid1 = ViewBag.mount,hccode1a= ViewBag.id, reportType="docx"}))"><i class="fa fa-file-word-o"></i></a>
+                        <a class="btn btn-circle btn-custom pdf" target="_blank" href="@Url.Action("AttnRptSingle","report", new RouteValueDictionary ( new { monthid1 = ViewBag.mount,hccode1a= ViewBag.id, reportType="xlsx"}))"><i class="fa fa-file-excel-o"></i></a>
+                    </div>
+                    <div class="card-header panel-heading">
+                        <button type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2" class="btn btn-custom btn-block text-center">FRONT DESK REPORT</button>
+
+                    </div>
+                    <div class="collapse multi-collapse" id="multiCollapseExample2">
+                        <div class="card-body panel-body">
+                            <form id="reportForm">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-sm-6 col-md-4" style="margin-right:24px !important">
+                                        <div class="form-group ">
+                                            <label class="labels">Dated Form :</label>
+                                            <input type="date" name="fromDate" id="datePicker" class="form-control" required />
+                                            @*@Html.EditorFor(model => model., new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "datepicker", @required = "required" } })*@
+                                            @Html.ValidationMessageFor(model => model.fromDate, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group ">
+                                            <label class="labels">Dated To :</label>
+                                            <input type="date" name="toDate" id="datePicker1" class="form-control" required />
+                                            @*@Html.EditorFor(model => model.toDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "datepicker1", @required = "required" } })*@
+                                            @Html.ValidationMessageFor(model => model.toDate, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group grpType">
+                                            <label class="labels">Brance Name :</label>
+                                            @Html.DropDownList("branch", null, htmlAttributes: new { @class = "form-control active form-group ddlType", @id = "dropdownlist", @reuired = "required" })
+                                            @Html.ValidationMessageFor(model => model.branch, "", new { @class = "text-danger" })
+
+                                        </div>
+
+                                        <div class="form-group grpType">
+                                            <label class="labels">Report Titles  :</label>
+                                            @Html.DropDownList("report", null, htmlAttributes: new { @class = "form-control dropdown form-group ddlType", @id = "dropdownlist1", @required = "required" })
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 form-group">
+                                        <button type="button" class="btn btn-custom btn-block bntGroupShow  btn btn-margin" onclick="submitFrom()">Show</button>
+
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="col-lg-12">
+
+                    <hr />
+                    <div id="data">
+
+                    </div>
+                    <div id="date-footer">
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.collapse').collapse();
+            $('#loading').addClass('hide');
+            $("#datepicker").datepicker();
+            $("#datepicker").datepicker("option", "dateFormat", "d-M-y");
+            $("#datepicker1").datepicker();
+            $("#datepicker1").datepicker("option", "dateFormat", "d-M-y");
+            $('#myTableDT').DataTable({
+                "ordering": false
+            });
+           
+        })
+
+
+        function submitFrom() {
+            //show de loading gif
+            
+       
+            var FromDate = $("[name='fromDate']").val();
+            var ToDate = $("[name='toDate']").val();
+            var Branch = $("[name='branch']").val();
+            var Report = $("[name='report']").val();
+
+            if ($.trim(FromDate) == '') {
+                alert("Input the Valied From  Data");
+
+            } else if ($.trim(ToDate) == '') {
+                alert("Input the Valied To  Data");
+            } else if ($.trim(Branch) == '') {
+                alert("Input the Valied Branch");
+            } else if ($.trim(Report) == '') {
+                alert("Input the Valied report Type");
+            } else {
+                $('#loading').addClass('show');
+                var datatoPost = {
+                    toDate: ToDate,
+                    fromDate: FromDate,
+                    report: Report,
+                    branch: Branch,
+                }
+                @*@ToDate= ToDate;
+                @FromDate= FromDate;
+                @Branch= Branch;
+                @Report= Report;*@
+
+                //hit the action using ajax
+                $.ajax({
+                    url: '@Url.Action("reports","general")',
+                    data: JSON.stringify(datatoPost),
+                    type: 'post',
+                    contentType: "application/json; charset=utf-8",
+                    
+                    success: function (result) {
+                        
+                      
+                        $("#data").empty();
+                        $("#date-footer").empty();
+                        //switch statment
+                        switch (datatoPost.report) {
+                            case "001":
+                            case "002":
+
+                                gettransinvlist(result, datatoPost);
+                                break;
+                            case "003":
+                            case "008": // "01. Group sales summary"       
+                                getGropSalesSumm(result, datatoPost);
+                                break;
+                            case "004": // "04. CC Charge Details"       
+                                getCCchargeDetails(result, datatoPost);
+                                break;
+                            case "005": // "05. Discount Reference List"       
+                                getDiscRefList(result, datatoPost);
+                                break;
+                            case "006": // "06. Dues Reference List"       
+                                getDuesRefList(result, datatoPost);
+                                break;
+                            case "007": // "07. Reference wise Due Collection"       
+                                getRefWiseDueCol(result, datatoPost);
+                                break;
+                            case "010":
+                                getInvSumm(result, datatoPost);
+                                break;
+                            case "011": // "11. Date Wise Collection"       
+                                getDateWiseColl(result, datatoPost);
+                                break;
+                            default:
+
+                                break;
+                        }
+                       
+                        //getInvSumm(result, datatoPost);
+
+                        //whene get the data from is hide id =panelFrom
+                        $("#multiCollapseExample2").collapse('hide');
+                       // $('body').append("<link href='/assets/css/jquery.dataTables.css'/>");
+                        $('body').append("<script type='text/javascript' src='/assets/js/jquery.dataTables.js'><\/script>");
+                        $('body').append("<link href='/assets/css/dataTables.bootstrap.min.css' />");
+                        $('body').append("<link href='/assets//simple.money.format.js' />");
+                        $('.money').simpleMoneyFormat();
+                        $('body').append("<script type='text/javascript' src='/assets/js/dataTables.bootstrap.js'><\/script>");
+                        $('#myTableDT').DataTable({
+                            "ordering": false
+                        });
+                        $('#loading').removeClass('show');
+                        $('#loading').addClass('hide');
+                        //$('#myTableDT2').DataTable({
+                        //    "ordering": false
+                        //});
+                        //serach by colume
+                        var table = $('#myTableDT2').DataTable({
+                            "ordering": false
+                           
+                        });
+                        
+                        // Apply the search
+                        table.columns().every(function () {
+                            var that = this;
+
+                            $('input', this.footer()).on('keyup change', function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                        });
+
+                        //serch in hilight
+                        table.on('draw', function () {
+                            var body = $(table.table().body());
+
+                     
+                        });
+
+                        //row print
+                        //end row print
+                    },
+                    error: function () {
+                        //window.location.reload();
+                        alert('Created Some internel problem Sorry to reload the page');
+                    }
+
+                })
+            }
+
+            $('#loading').addClass('hide');
+
+        }
+
+        //c
+        function getInvSumm(result, datatoPost) {
+            //this is getInvSumm method
+
+            var html = "";
+            html += "<p><span  colspan='11'><b> " + "SALES & COLLECTION SUMMERY - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>";
+            html += "<div class='card'><table id='myTableDT' class='table table-bordered table-hover Atable'>" +
+                "<thead><tr class='TransInvRow' style='top: 0px;'>" +
+                "<th>Collection Date & Time</th><th> Date & Time</th><th>User Name</th><th>Invoice</th><th>Patient Name</th><th>Total Amount</th><th>Discount Name</th><th>Net Bill Amount</th><th>New Coll. Amount</th><th>Due Coll. Amount</th></tr></thead> <tbody>";
+
+            var brnid1 = "xxxxxxxxxxxx";
+            var ptinvdatOld = "xxxxxxxxxxxx";
+
+            //loop the list
+            $.each(result.list, function (index, value) {
+
+
+               
+
+                if (brnid1 != value.terminalid) {
+                    html += "<tr><td><b>" + value.terminalid + "-" + value.brnnam + "</b></td><td></td><td></td><td></td><td></td><td></td><td>" + result.list[2].totam + "</td><td></td><td></td><td></td></tr>";
+                }
+                brnid1 = value.terminalid;
+                var coldat = jsonToDate(value.coldat, 'DD-MMM-YYYY, h:mm a')
+                html += "<tr><td class=' '>" + coldat //Collection Date
+                    + "</td><td class='text-nowrap'>" + jsonToDate(value.invdat, 'DD-MMM-YYYY, h:mm a')  //Invoice Date
+                    + "</td><td>" + value.username  //Invoice Date
+                    //+ "</td><td " + stylel2 + ">" + item.ptinvnum2.ToString()  //Invoice No
+
+                    + "</td><td class='text-nowrap'><u><a href='InvoiceWiseRpt?memoNum=" + value.ptinvnum + "&MemoDate=" + jsonToDate(value.invdat, 'DD-MMM-YYYY')
+
+                    + "' target='_blank'>" + value.ptinvnum2 + "</u></a>"  //Invoice
+                    + "</td><td>" + value.ptname     // Patient Name Amount
+                    + "</td><td class='text-right text-nowrap money'>" + value.totam    // Total Amount
+                    + "</td><td class='text-right text-nowrap money'>" + value.disam    // Discount Amount
+                    + "</td><td class='text-right text-nowrap money'>" + value.netam     // Net Bill amount
+                    + "</td><td class='text-right text-nowrap money'>" + value.ncolam       // New Coll amount
+                    + "</td><td class='text-right text-nowrap money'>" + value.ocolam       // Due Coll amount
+                    + "</td></tr>";
+
+            })
+
+            html += "</tbody></table></div>";
+            //appind tahe data in html tag
+         
+            $("#data").append(html);
+
+
+          
+
+        }
+
+
+        function gettransinvlist(result, datatoPost) {
+           
+            var html = "<p><span  colspan='11'><b> " + "Sales Invoice List - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>";
+
+            html += "<div class='card'><table id='myTableDT2' class='table table-bordered table-hover Atable'>" +
+                "<thead><tr class='TransInvRow' style='top: 0px;'><th>SL</th><th>Date & Time</th><th>Invoice</th>" +
+                "<th>User Name</th><th>Terminal</th><th>Description</th><th>Item Qty</th><th>Discount Amount</th>" +
+                "<th>Total Bill</th><th>Collection Amount</th><th>Due Amount</th></tr></thead><tbody>"
+
+            var brnid1 = "xxxxxxxxxxxx";
+            var ptinvdatOld = "xxxxxxxxxxxx";
+
+
+           
+            //loop 
+            $.each(result.list, function (index, item) {
+                if (brnid1 != item.brncod) {
+                    html += "<tr><td></td><td><b>" + item.brnnam +"</b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+                }
+                brnid1 = item.brncod;
+                var formattedDate = jsonToDate(item.ptinvdat, 'DD-MMM-YYYY, h:mm a')
+                
+                //there have some conditons
+                html += "<tr><td class='text-right  text-nowrap'>" + (item.slnum == 0 ? "" : item.slnum)
+                    + "</td><td class='text-nowrap'>" + formattedDate   //.toDate('YYYY-MM-DD')
+                    + "</td><td class='text-nowrap'>" + (item.slnum == 0 ? "" : "<abbr title='Ref- " + item.rfFullName + "' > ")
+                    + "<a href='InvoiceWiseRpt?memoNum=" + item.ptinvnum + "&MemoDate=" + formattedDate
+                    //+ "<a href='InvoiceWiseRpt?memoNum=" + item.ptinvnum + "&MemoDate=" + item.ptinvdat.ToString("dd-MMM-yyyy") 
+                    + "' target='_blank'>" + item.ptinvnum2 + "</a></abbr>"  //Invoice
+                    + "</td><td>" + item.signinnam//User Name
+                    + "</td><td>" + item.preparetrm //Terminal               
+                    + "</td><td>" + item.ptname  //Description
+
+                    + "</td><td class='text-right  text-nowrap'>" + item.titemqty     // Item Qty
+                    //  + "</td><td " + styler1 + ">" + item.titmam.ToString("#,##0.00;-#,##0.00; ")       // Total Amount
+                    + "</td><td class='text-right  text-nowrap money'>" + item.tidisam     // Discount Amount
+                    //  + "</td><td " + styler1 + ">" + item.tinetam.ToString("#,##0.00;-#,##0.00; ")      // Net Amount
+                    //  + "</td><td " + styler1 + ">" + item.tivatam.ToString("#,##0.00;-#,##0.00; ")      // Vat Amount
+                    + "</td><td class='text-right money'>" + item.tbillam     // Total Bill 
+                    + "</td><td class='text-right money'>" + item.tbilcolam    // Collection Amount
+                    + "</td><td class='text-right money'>" + item.tdueam       // Due amount              
+                    + "</td></tr>";
+
+               
+
+            });
+
+            html += "</tbody><tfoot><tr><th>SL</th><th>Date & Time</th><th>Invoice</th>" +
+                "<th>User Name</th><th>Terminal</th><th>Description</th><th>Item Qty</th><th>Discount Amount</th>" +
+                "<th>Total Bill</th><th>Collection Amount</th><th>Due Amount</th></tr></tfoot></table></div>";
+            //appind tahe data in html tag
+          
+
+            var i = 0;
+            $("#data").append(html);
+            $('#myTableDT2 tfoot th').each(function () {
+                var title = $(this).text();
+                i++;
+                if (i != 1) {
+                    $(this).html('<input type="text" class="form-control form-control-sm" placeholder="Search ' + title + '" />');
+                } 
+                
+            });
+
+
+
+          
+            
+        }
+        
+
+        function getDateWiseColl(result, datatoPost) {
+            var html = "<p><span  colspan='11'><b> " + "DATE WISE SALES & COLLECTION SUMMERY - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>";
+            html += "<div class='card' ><table id='myTableDT2' class='table table-bordered table-hover Atable'>"+
+            "<thead> <tr class='TransInvRow' style='top: 0px; '>" +
+            "<th>Description</th>" +
+            "<th>New Invoice Quantity</th>" +
+            "<th>Gross Sales Amount</th>" +
+            "<th>Discount Amount</th>" +
+            "<th>Net Sales Amount</th>" +
+            "<th>Collecton Amount</th>" +
+                    "<th>Due Amoount</th>"+
+                "</tr></thead><tbody>";
+            var brnid1 = "xxxxxxxxxxxx";
+            $.each(result.list, function (index, item) {
+
+                 if (brnid1 != item.grp1cod)
+            {
+                     html += "<tr><td><b>" + item.grp1desc + "<b></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+            }
+
+                brnid1 = item.grp1cod;
+
+                 html += "<tr><td>" + item.grp2desc + "</td>" +
+                    "<td class='text-right'>" + item.invqty + "</td>" +
+                    "<td class='text-right money'>" + item.gsalam + "</td>" +
+                    "<td class='text-right money'>" + item.disam + "</td>" +
+                    "<td class='text-right money'>" + item.nsalam + "</td>" +
+                    "<td class='text-right money'>" + item.collam + "</td>" +
+                    "<td class='text-right money'>" + item.dueam + "</td>" +
+                    "</tr>";
+            })
+
+            html += "</tbody></table></div>";
+            //appind tahe data in html tag
+
+            $("#data").append(html);
+           
+
+           
+        }
+
+        function getRefWiseDueCol(result, datatoPost) {
+
+            var html = "<p><span  colspan='11'><b> " + "REFERENCE WISE DUE COLLECTION - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>";
+            html += "<div class='card'><table id='myTableDT' class='table table-bordered table-hover Atable'>"+
+                "<thead> <tr class='TransInvRow' style='top: 0px; '>" +
+                "<th>Date & Time</th>" +
+                "<th>User Name</th>" +
+                "<th>Invoice </th>" +
+                "<th>Patient Name</th>" +
+                "<th>Total Amnt</th>" +
+                "<th>Dis Amnt</th>" +
+                "<th>Net Bill Amnt</th>" +
+
+                "<th>New Coll. Amt</th>" +
+                "<th>Due Amount</th>" +
+
+                "<th>Dis. Ref.</th>" +
+                "</tr></thead> <tbody>";
+            var brnid1 = "xxxxxxxxxxxx";
+            $.each(result.list, function (index, item) {
+
+                 if (brnid1 != item.brncod)
+            {
+                     html += "<tr><td style='color:blue'><b>" + item.brnnam + "<b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+
+            }
+
+            brnid1 = item.brncod;
+                html += "<tr><td class='text-nowrap'>" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a') + "</td>" +
+                        "<td>" + item.username + "</td>" +
+                    //  "<td>" + item.ptinvnum2 + "</td>" +
+                    " <td class='text-nowrap'><u><a href='InvoiceWiseRpt?memoNum=" + item.ptinvnum + "&MemoDate=" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a')
+
+                         + "' target='_blank'>" + item.ptinvnum2 + "</u></a></td>" +
+                        "<td>" + item.ptname + "</td>" +
+                        "<td class='text-right money'>" + item.totam + "</td>" +
+                        "<td class='text-right money'>" + item.disam + "</td>" +
+                        "<td class='text-right'>" + item.netam + "</td>" +
+                        //   "<td " + styler1 + ">" + item.coldat.ToString("dd-MMM-yyyy hh:mm tt") + "</td>" +
+                        "<td class='text-right money'>" + item.collam + "</td>" +
+                        "<td class='text-right money'>" + item.dueam + "</td>" +
+                        //   "<td " + styler1 + ">" + item.daydiff + "</td>" +
+                        "<td>" + item.ptinvnote + "</td></tr>";
+            })
+
+            html += "</tbody></table></div>";
+            //appind tahe data in html tag
+
+            $("#data").append(html);
+            
+
+           
+        }
+
+        function getDuesRefList(result, datatoPost) {
+
+            var html = "<p><span  colspan='11'><b> " + "DUES INFORMATION DETAILS - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>"
+            html += "<div class='card'><table id='myTableDT2' class='table table-bordered table-hover Atable'>"+
+                "<thead><tr class='TransInvRow' style='top: 0px;'>" +
+            "<th>Date & Time</th>" +
+            "<th>User Name</th>" +
+            "<th>Invoice</th>" +
+            "<th>Patient Name</th>" +
+            "<th>Total Amount</th>" +
+            "<th>Discount Amount</th>" +
+            "<th>Net Bill Amount</th>" +
+
+            "<th>New Coll. Amount</th>" +
+            "<th>Due Amount</th>" +
+
+                    "<th>Discount Reference</th>"+
+                "</tr></thead><tbody>";
+            var brnid1 = "xxxxxxxxxxxx";
+            $.each(result.list, function (index, item) {
+
+                 if (brnid1 != item.terminalid)
+            {
+                     html += "<tr><td><b>" + "Terminal : " + item.terminalid + " - " + item.brnnam + "<b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+
+            }
+            brnid1 = item.terminalid;
+
+                html += "<tr><td class='text-nowrap'>" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a') + "</td>" +
+                        "<td>" + item.username + "</td>" +
+                    //   "<td>" + item.ptinvnum2 + "</td>" +
+                    " <td class='text-nowrap'><u><a href='InvoiceWiseRpt?memoNum=" + item.ptinvnum + "&MemoDate=" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a')
+
+                         + "' target='_blank'>" + item.ptinvnum2 + "</u></a></td>" +
+                        "<td>" + item.ptname + "</td>" +
+                        "<td class='text-right money'>" + item.totam + "</td>" +
+                        "<td class='text-right money'>" + item.disam + "</td>" +
+                        "<td class='text-right'>" + item.netam + "</td>" +
+                        //       "<td>" + item.coldat.ToString("dd-MMM-yyyy hh:mm tt") + "</td>" +
+                        "<td class='text-right money'>" + item.collam + "</td>" +
+                        "<td class='text-right money'>" + item.dueam + "</td>" +
+                        //      "<td>" + item.daydiff + "</td>" +
+                        "<td>" + item.ptinvnote + "</td></tr>";
+            })
+
+            html += "</tbody></table></div>";
+            $("#data").append(html);
+           
+           // console.log(result);
+
+           
+        }
+
+        function getDiscRefList(result, datatoPost) {
+            var html = "<p><span  colspan='11'><b> " + "DISCOUNT INFORMATION DETAILS - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>";
+            html += "<div class='card'><table id='myTableDT2' class='table table-bordered table-hover Atable'>" +
+                "<thead> <tr class='TransInvRow' style='top: 0px;'>" +
+                "<th>Date & Time</th>" +
+                "<th>User Name</th>" +
+                "<th>Invoice No</th>" +
+                "<th>Patient Name</th>" +
+                "<th>Total Amount</th>" +
+                "<th>Discount Amount</th>" +
+                "<th>Net Bill Amount</th>" +
+                "<th>New Coll. Amount</th>" +
+                "<th>Due Amount</th>" +
+                "<th>Discount Reference</th>" +
+                "</tr></thead><tbody>";
+
+            var brnid1 = "xxxxxxxxxxxx";
+            $.each(result.list, function (index, item) {
+                 if (brnid1 != item.terminalid)
+            {
+                     html += "<tr><td><b>" + "Terminal : " + item.terminalid + " - " + item.brnnam + "<b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+
+            }
+            brnid1 = item.terminalid;
+                html += "<tr><td class='text-nowrap'>" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a') + "</td>" +
+                    "<td>" + item.username + "</td>" +
+                    //   "<td>" + item.ptinvnum2 + "</td>" +
+                    " <td class='text-nowrap'><u><a href='InvoiceWiseRpt?memoNum=" + item.ptinvnum + "&MemoDate=" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a')
+
+                    + "' target='_blank'>" + item.ptinvnum2 + "</u></a></td>" +
+                    "<td>" + item.ptname + "</td>" +
+                    "<td class='text-right money'>" + item.totam + "</td>" +
+                    "<td class='text-right money'> " + item.disam + "</td>" +
+                    "<td class='text-right money'>" + item.netam + "</td>" +
+                    //   "<td " + styler1 + ">" + item.coldat.ToString("dd-MMM-yyyy hh:mm tt") + "</td>" +
+                    "<td class='text-right money'>" + item.collam + "</td>" +
+                    "<td class='text-right money'>" + item.dueam + "</td>" +
+                    //   "<td " + styler1 + ">" + item.daydiff + "</td>" +
+                    "<td>" + item.ptinvnote + "</td></tr>";
+            })
+
+            html += "</tbody></table></div>";
+            $("#data").append(html);
+          //  console.log(html);
+
+            
+        }
+
+        function getCCchargeDetails(result, datatoPost) {
+          
+            var html = "<p><span  colspan='11'><b> " + "CC Charge Details - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>";
+            html += "<div class='card'><table id='myTableDT2' class='table table-bordered table-hover Atable'>" +
+                "<thead>  <tr class='TransInvRow' style='top: 0px; '>" +
+                "<th>Date & Time</th>" +
+                "<th>User Name</th>" +
+                "<th>Invoice No</th> " +
+                "<th>Patient Name</th> " +
+                "<th>CC Amount</th> " +
+                "<th>CC Paid Amount</th> " +
+                "<th>Balance Amount</th> " +
+                "</tr></thead><tbody>";
+
+            var brnid1 = "xxxxxxxxxxxx";
+
+            $.each(result.list, function (index, item) {
+
+                
+            if (brnid1 != item.terminalid)
+            {
+                html += "<tr><td><b>" + "Terminal : " + item.terminalid + " - " + item.brnnam + "<b></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+
+            }
+            brnid1 = item.terminalid
+
+                html += "<tr><td class='text-nowrap'>" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a') + "</td>" +
+                    "<td>" + item.username + "</td>" +
+                    //   "<td>" + item.ptinvnum2 + "</td>" +
+                    " <td class='text-nowrap'><u><a href='InvoiceWiseRpt?memoNum=" + item.ptinvnum + "&MemoDate=" + jsonToDate(item.invdat, 'DD-MMM-YYYY, h:mm a')
+
+                    + "' target='_blank'>" + item.ptinvnum2 + "</u></a></td>" +
+                    "<td>" + item.ptname + "</td>" +
+                    "<td class='text-right money'>" + item.totam + "</td>" +
+                    "<td class='text-right money'>" + item.ncolam + "</td>" +
+
+                    "<td class='text-right money'>" + item.ocolam + "</td></tr>";
+
+            });
+
+            html += "</tbody></table></div>";
+            $("#data").append(html);
+          
+          
+
+            
+        }
+
+
+        function getGropSalesSumm(result, datatoPost) {
+          
+            var html = "<p><span  colspan='11'><b> " + "Group Sales Summery - " + "(From " + datatoPost.fromDate + " to " + datatoPost.toDate + ")" + " </b></span></p>"
+            var brnid1 = "xxxxxxxxxxxx";
+
+            html += "<div class='card'><table id='myTableDT2' class='table table-bordered table-hover Atable'>"+
+                "<thead><tr class='TransInvRow' style='top: 0px;'>" + /*<th>SL</th>*/
+                    "<th>Item Name & Trancsaction Description</th>"+
+                    "<th>Quantity</th><th>Amount</th><th>Discount</th>"+
+                "<th>Net Amount</th></tr></thead><tbody>";
+
+            //loop
+            $.each(result.list, function (index, item) {
+               
+                //var color1 = (item.trdesc.trim().contains("GRAND ") ? "Blue" : "Black");
+                //color1 = "style = 'color:" + color1 + "; '";
+                
+                html += "<tr><td>" + item.trdesc
+                    + "</td><td class='text-right'>" + item.itemqty
+                    + "</td><td class='text-right money'>" + item.titmam
+                    + "</td><td class='text-right money'>" + item.idisam
+                    + "</td><td class='text-right money'>" + item.inetam
+                           + "</td></tr>";
+
+            });
+            html += "</tbody></table></div>";
+            $("#data").append(html);
+            //console.log(html);
+        }
+
+
+        function jsonToDate(date, format) {
+            
+            return moment(date).format(format);
+        }
+    </script>
+
+}

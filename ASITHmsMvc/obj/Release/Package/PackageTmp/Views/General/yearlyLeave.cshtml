@@ -1,0 +1,112 @@
+﻿@model ASITHmsMvc.Models.DtoModels.yearlyLeave
+
+@{
+    ViewBag.Title = "yearlyLeave";
+}
+
+<div class="main-content small-gutter">
+
+    <div class="row justify-content-md-center" id="loading">
+        <div class="col-md-12 bot-mar">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"> <p style="font-size:17px; color: #000; padding-top: 10px;">Loading...</p></div> <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-bdr">
+                <div class="panel panel-success">
+                    <div class="card-header panel-heading">
+                        <button type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2" class="btn btn-custom btn-block text-center">YEARLY LEAVE REPORT</button>
+
+                    </div>
+                    <div class="collapse multi-collapse" id="multiCollapseExample2">
+                        <div class="card-body panel-body">
+                            @using (Html.BeginForm("yearlyLeave", "General", FormMethod.Get))
+                            {
+
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-5">
+                                        <div class="form-group grpType">
+                                            <label class="labels"> Year :</label>
+                                            @Html.DropDownList("ddlLocation", (IEnumerable<SelectListItem>)ViewBag.ddlLocation, htmlAttributes: new { @id = "", @class = "form-control", @required = "@required" })
+                                            @Html.ValidationMessageFor(model => model.ddlLocation, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group grpType">
+                                            <label class="labels"> Location :</label>
+                                            @Html.DropDownList("ddlMonth", (IEnumerable<SelectListItem>)ViewBag.ddlMonth, htmlAttributes: new { @id = "", @class = "form-control", @required = "required" })
+                                            @Html.ValidationMessageFor(model => model.ddlMonth, "", new { @class = "text-danger" })
+
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="col-md-8 form-group">
+                                        <button type="submit" class="btn btn-custom btn-block bntGroupShow  btn btn-margin" onclick="hiden()">Show</button>
+
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <hr />
+    <input type="hidden" value="@ViewBag.getYearlyLeaveData" id="cols" />
+    <!--show output data-->
+    @if (ViewBag.getYearlyLeaveData != null)
+    {
+
+        <div class="card-body">
+           
+                                @Html.Raw(ViewBag.getYearlyLeaveData)
+
+                       
+        </div>
+
+
+
+    }
+</div>
+
+@section scripts{
+    <script>
+    $(document).ready(function () {
+
+        var s = $("#cols").val();
+        $('#datatable').DataTable({
+            'ordering': false,
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+        });
+        //v$("#multiCollapseExample2").collapse('hide');
+        $('.collapse').collapse();
+        if ( s != "") {
+            
+
+        } else {
+            
+            
+        }
+    });
+
+
+
+    </script>
+
+}

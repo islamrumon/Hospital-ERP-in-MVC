@@ -1,0 +1,146 @@
+﻿@model ASITHmsMvc.Models.DtoModels.EmpGroup
+@{
+    ViewBag.Title = "AttnRptGroup";
+    var sectid1 = "xxxxxxxxxxxx";
+     var empid1 = "xxxxxxxxxxxx";
+}
+
+<div class="main-content small-gutter">
+
+    <div class="row justify-content-md-center" id="loading">
+        <div class="col-md-12 bot-mar">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"> <p style="font-size:17px; color: #000; padding-top: 10px;">Loading...</p></div> <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-bdr">
+                <div class="panel panel-success">
+                    <div class="card-header panel-heading">
+                        <button type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2" class="btn btn-custom btn-block text-center">DEPARTMENT WISE ATTENDANCE REPORT</button>
+
+                    </div>
+                    <div class="collapse multi-collapse" id="multiCollapseExample2">
+                        <div class="card-body panel-body">
+                            @using (Html.BeginForm("AttnRptGroup", "General", FormMethod.Get))
+                            {
+                               
+                                <div class="row justify-content-md-center">
+                                    <div class="col-sm-6 col-md-4 ">
+                                        <div class="form-group grpType">
+                                            <label class="labels">From Date :</label>
+                                            <input class="form-control epad form-group txtgrpMonth" name="toDate"  id="datePicker" required autocomplete="off" type="date" />
+                                            @Html.ValidationMessageFor(model => model.toDate, "", new { @class = "text-danger" })
+
+                                        </div>
+
+                                        <div class="form-group grpType">
+                                            
+                                            <label  class="labels">To Date :</label>
+                                            <input class="form-control epad form-group txtgrpMonth" name="fromDate" required autocomplete="off" type="date" id="datePicker1" />
+                                            @Html.ValidationMessageFor(model => model.fromDate, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group grpType">
+                                            <label class="labels">Office :</label>
+                                            @Html.DropDownList("type", (IEnumerable<SelectListItem>)ViewBag.ddlType, htmlAttributes: new {@id= "dropdownlist", @class = "form-control active form-group ddlType ml-4", @reuired = "required" })
+                                            @Html.ValidationMessageFor(model => model.type, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <div class="col-md-8 form-group">
+                                        <button type="submit" class="btn btn-custom btn-block bntGroupShow  btn btn-margin">Show</button>
+
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <hr />
+    <input type="hidden" value="@ViewBag.lbltbl1" id="cols" />
+    <!--show output data-->
+    @if (ViewBag.lbltbl1 != null)
+    {
+
+        <div class="container">
+
+            <div class="form-group">
+                <div class="col-xl-12 col-md-12 col-sm-12 col-xs-12">
+                    @Html.Raw(ViewBag.lbltbl1)
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+    }
+
+    @*<table class="table table-bordered  table-hover Atable'">
+    <thead>
+        <tr>
+            <td>Date</td>
+            <td>>Name & Machine Responses</td>
+            <td>Office Time</td>
+        </tr>
+        
+        </thead>
+        <tbody>
+            <tr>
+
+            </tr>
+        </tbody>
+    </table>*@
+
+
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            debugger
+            var i = parseInt(@ViewBag.days);
+            var s = $("#cols").val();
+
+            $('#datatable').DataTable({
+                'ordering': false,
+                "lengthMenu": [[i, 25, 50,100, -1], [i, 25, 50,100, "All"]]
+            });
+            if (s != "") {
+                $("#multiCollapseExample2").collapse('hide');
+
+            } else {
+                $('.collapse').collapse();
+               
+            }
+        });
+
+       
+
+    </script>
+
+}
+

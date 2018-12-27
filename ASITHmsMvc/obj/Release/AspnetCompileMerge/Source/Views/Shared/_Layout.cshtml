@@ -1,0 +1,147 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Healthcare Management System</title>
+    @*@Styles.Render("~/css/kendo")*@
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.common.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.rtl.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.default.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.mobile.all.min.css">
+    @Styles.Render("~/Content/css")
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" />
+
+</head>
+<body class="nav-md theme-green">
+
+
+    <div class="main-container">
+        <!-- sidebar -->
+        <div class="sidebar">
+            <div class="scroll-wrapper">
+                <div class="d-block d-sm-none sslogo">
+                    @*<%--     <h3><span>CenterPoint</span>Healthcare Management System</h3>--%>*@
+                    <a>
+                        <img src="~/Images/CentERPoint3.png" alt="Logo" style="width: 100%" />
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+
+
+                <!-- search -->
+                <div id="sidebar-menu" class="profile search-wrap d-sm-block clearfix text-center">
+                    <input class="search" name="search" type="text" placeholder="What're we looking for?">
+                    <div>
+                        <button class="search-submit" value="Rechercher" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <!-- /search -->
+                <!-- sidebar menu -->
+
+
+                @{Html.RenderAction("Sidemenu", "Home");}
+
+                <!-- /sidebar menu -->
+            </div>
+        </div>
+        <!-- /sidebar -->
+
+        <div class="content-wrapper">
+
+            <!-- header content  -->
+            <header class="header">
+                <nav class="header-menu">
+
+                    <!--This is navbar toggol section-->
+                    <div class="nav toggle">
+                        <a href="javascript:void(0)" id="menu-toggle" class="ripple">
+                            <span class="bars"></span>
+                        </a>
+                    </div>
+                    <!--This is toper section for logo-->
+                    <!--This is Profile Section -->
+                    @{
+                        Html.RenderAction("header", "home");
+                    }
+
+                </nav>
+            </header>
+            <!-- /header content -->
+
+            <div class="body-content" style="margin-bottom: 60px;">
+                @*<div class="breadcrumb" id="homebreadcrumb">
+                        <uc1:Breadcrumb runat="server" ID="Breadcrumb" />
+                    </div>*@
+                <!-- main content -->
+                @RenderBody()
+                <!-- /main content -->
+            </div>
+
+            <!-- footer content -->
+            <footer class="footer fixed-bottom">
+                <div class="float-right">
+                    <p class="footerText d-none d-md-block">
+                        <a href="http://www.asit.com.bd" target="_blank">&copy; @(DateTime.Now.Year -2) - @(DateTime.Now.Year + 5) - Advanced Software &amp; IT Services Ltd.,</a>
+                        &nbsp;&nbsp;<a href="#"> Terms of use</a>
+                        &nbsp;&nbsp;<a href="http://www.asit.com.bd/Feedback.aspx" target="_blank"> Contact us</a>
+                    </p>
+                    <p class="footerText d-md-none">
+                        <a href="http://www.asit.com.bd" target="_blank">&copy; @(DateTime.Now.Year -2) - @(DateTime.Now.Year + 5) - ASIT Services Ltd.,</a>
+                    </p>
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+
+        </div>
+    </div>
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatable")
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2018.3.1017/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2018.3.1017/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2018.3.1017/js/kendo.all.min.js"></script>
+
+    @*@Scripts.Render("~/js/kendo")*@
+    <script>
+        $(document).ready(function () {
+            $('.money').simpleMoneyFormat();
+            $('#loading').addClass('hide');
+            //$("input").on("change", function () {
+            //    this.setAttribute(
+            //        "data-date",
+            //        moment(this.value, "dd-MMM-yyyy")
+            //            .format(this.getAttribute("data-date-format"))
+            //    )
+            //}).trigger("change");
+            $("#datePicker").kendoDatePicker({
+                format: "dd-MMM-yyyy",
+                value: new Date()
+            });
+            $("#datePicker1").kendoDatePicker({
+                format: "dd-MMM-yyyy",
+                value: new Date()
+            });
+            $("#datePicker2").kendoDatePicker({
+                format: "dd-MMM-yyyy",
+                value: new Date()
+            });
+            //$("#dropdownlist").kendoDropDownList();
+            //$("#dropdownlist1").kendoDropDownList();
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
